@@ -8,6 +8,7 @@ const resCodes = [
   503, 504, 506, 507, 508, 509, 510, 511, 521, 522, 523, 525, 530, 599,
 ];
 let div = document.querySelector("#imgsContainer");
+
 async function getimg(code) {
   const res = await fetch(url + code);
   if (!res.ok) {
@@ -18,20 +19,27 @@ async function getimg(code) {
 }
 
 async function appendImages() {
-  for (let code of resCodes) {
-    const imgSrc = await getimg(code);
-    if (imgSrc) {
-      const imgholder = document.createElement("div");
-      const row = document.createElement("div");
-      const img = document.createElement("img");
-      row.classList.add('row')
-      img.src = imgSrc;
-      img.style.objectFit = "cover";
-      imgholder.classList.add("col-sm-4");
-      imgholder.classList.add("col-12");
-      imgholder.append(img);
-      div.append(imgholder);
+  for (let i = 0; i < resCodes.length; i += 3) {
+    const rowHolder = document.createElement("div");
+    rowHolder.classList.add("row", "justify-content-center");
+
+    for (let j = 0; j < 3 && i + j < resCodes.length; j++) {
+      const code = resCodes[i + j];
+      const imgSrc = await getimg(code);
+
+      if (imgSrc) {
+        const imgholder = document.createElement("div");
+        const img = document.createElement("img");
+        img.src = imgSrc;
+        img.style.objectFit = "cover";
+        img.classList.add("img-fluid");
+        imgholder.classList.add("col-sm-4", "col-12");
+        imgholder.append(img);
+        rowHolder.appendChild(imgholder);
+      }
     }
+
+    div.appendChild(rowHolder);
   }
 }
 
